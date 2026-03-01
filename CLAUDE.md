@@ -4,8 +4,8 @@ Project context and conventions for Claude Code sessions.
 
 ## What This Is
 
-HomeFin is a greenfield family finance SPA. No backend — all data lives in `localStorage`.
-Deployed as a static site via HashRouter (no server config needed).
+HomeFin is a family finance SPA with Cognito authentication and per-user DynamoDB storage.
+Deployed as a static site on GitHub Pages via HashRouter.
 
 ## Stack
 
@@ -14,23 +14,60 @@ Deployed as a static site via HashRouter (no server config needed).
 - **Tailwind CSS v4** — configured via `@tailwindcss/vite` plugin; no `tailwind.config` file; single `@import "tailwindcss"` in `src/index.css`
 - **Recharts** — PieChart, BarChart
 - **React Router v7** — HashRouter, routes: `/`, `/transactions`, `/budgets`, `/settings`
+- **AWS Amplify v6** (`aws-amplify`, `@aws-amplify/ui-react`) — Cognito auth + `<Authenticator>` UI
+- **AWS SDK v3** (`@aws-sdk/client-dynamodb`, `@aws-sdk/lib-dynamodb`) — DynamoDB read/write
 
 ## Dev Commands
 
 ```bash
 source ~/.nvm/nvm.sh && nvm use 20   # always required — project needs Node 20
-npm run dev                           # http://localhost:5173
+npm run dev                           # http://localhost:5173/HomeFin/
 npm run build                         # output to dist/
 npx tsc --noEmit                      # type-check only
 ```
 
+## AWS Infrastructure (ap-northeast-1)
+
+| Resource | ID |
+|---|---|
+| Cognito User Pool | `ap-northeast-1_pSHzX5rLJ` |
+| User Pool Client | `2f9eq6fmr3vg5tss9aj8t0u7e5` |
+| Identity Pool | `ap-northeast-1:0d2bd5be-126b-4718-b639-4806d1ba5821` |
+| DynamoDB Table | `HomeFin` — PK: `userId` (string), SK: `sk` (string) |
+| IAM Role | `HomeFin-CognitoAuthRole` — row-level policy on `userId` |
+
+**Critical**: The DynamoDB partition key `userId` must be the **Identity Pool `identityId`**
+(e.g. `ap-northeast-1:uuid`), NOT the Cognito User Pool `sub` or email.
+The IAM condition `dynamodb:LeadingKeys: ["${cognito-identity.amazonaws.com:sub}"]`
+resolves to `session.identityId` from `fetchAuthSession()`.
+
 ## Architecture
+
+### Auth Flow
+- `src/aws-config.ts` calls `Amplify.configure()` — must be imported before any Amplify usage
+- `App.tsx` wraps everything in `<LangProvider>` → `<Authenticator>` → `<FinanceProvider>`
+- The `<Authenticator>` shows the Cognito sign-in/sign-up form when unauthenticated
+- `FinanceProvider` only mounts when the user is authenticated
 
 ### State Management
 - Single `FinanceState` in `FinanceContext` (React Context + useReducer)
-- Persisted to `localStorage` key `homefin_state` with `schemaVersion: 1`
-- Reducer in `src/context/financeReducer.ts` — pure, all action types defined there
-- Hook: `useFinance()` from `src/hooks/useFinance.ts`
+- On mount: loads from DynamoDB; detects user switch via `homefin_identity` localStorage key
+- Write-through cache: every state change saves to localStorage immediately + DynamoDB after 1.5s debounce
+- Reducer in `src/context/financeReducer.ts` — `LOAD_STATE` fills missing fields with defaults
+- Hook: `useFinance()` from `src/hooks/useFinance.ts` — exposes `state`, `syncing`, and all actions
+
+### Multi-User Isolation
+- Each user's data is stored in DynamoDB at `userId = identityId`
+- `homefin_identity` in localStorage tracks the last logged-in user's `identityId`
+- On mount, if `session.identityId !== homefin_identity`, the stale localStorage state is
+  discarded and replaced with the new user's DynamoDB data (or a fresh default)
+- Prevents User B from seeing User A's cached data after a browser-local sign-out/sign-in
+
+### DynamoDB Sync (`src/utils/dynamoSync.ts`)
+- `loadFromDynamo()` — returns `{ state: FinanceState | null; identityId: string | null }`
+- `saveToDynamo(state)` — writes `{ userId: identityId, sk: "STATE", data: JSON.stringify(state) }`
+- Both functions call `fetchAuthSession()` internally to get credentials and `identityId`
+- All errors are caught and logged; the app continues with local state on failure
 
 ### i18n
 - Two languages: English (`en`) and Japanese (`ja`)
@@ -55,7 +92,8 @@ FinanceState { transactions, budgets, categories, selectedMonth "YYYY-MM" }
 ### Key Utilities
 | File | Purpose |
 |---|---|
-| `src/utils/storage.ts` | `loadState()` / `saveState()` — localStorage read/write |
+| `src/utils/storage.ts` | `loadState()`, `saveState()`, `defaultFinanceState()`, `loadStoredIdentity()`, `saveIdentity()` |
+| `src/utils/dynamoSync.ts` | `loadFromDynamo()`, `saveToDynamo()` |
 | `src/utils/formatters.ts` | `formatCurrency`, `formatDate`, `formatMonth`, `localYearMonth`, `localYearMonthDay` |
 | `src/utils/calculations.ts` | `filterByMonth`, `sumByType`, `groupByCategory`, `computeBudgetProgress`, `buildMonthlyBarData`, `getLast6Months` |
 | `src/utils/demoData.ts` | `seedDemoData(month, categories)` — generates 12 sample transactions |
@@ -64,21 +102,23 @@ FinanceState { transactions, budgets, categories, selectedMonth "YYYY-MM" }
 
 ```
 src/
-├── App.tsx                          # HashRouter + LangProvider + FinanceProvider
+├── App.tsx                          # LangProvider + Authenticator + FinanceProvider + HashRouter
+├── aws-config.ts                    # Amplify.configure() — imported first in App.tsx
 ├── index.css                        # @import "tailwindcss" only
 ├── main.tsx
 ├── types/index.ts
 ├── constants/categories.ts          # DEFAULT_CATEGORIES (14 built-in)
 ├── i18n/translations.ts             # EN + JA strings
 ├── context/
-│   ├── FinanceContext.tsx
+│   ├── FinanceContext.tsx           # DynamoDB load/save, user-switch detection
 │   ├── LangContext.tsx
-│   └── financeReducer.ts
+│   └── financeReducer.ts            # LOAD_STATE is defensive (fills missing fields)
 ├── hooks/
 │   ├── useFinance.ts
 │   └── useLang.ts
 ├── utils/
-│   ├── storage.ts
+│   ├── storage.ts                   # localStorage + identity helpers
+│   ├── dynamoSync.ts                # DynamoDB read/write via Identity Pool credentials
 │   ├── formatters.ts
 │   ├── calculations.ts
 │   └── demoData.ts
@@ -111,7 +151,15 @@ src/
 - [x] Settings — category management (add / edit / delete, color picker, type selector)
 - [x] i18n — English + Japanese, persisted preference, language switcher in TopBar
 - [x] Timezone-safe date handling (`localYearMonth`, `localYearMonthDay`)
-- [x] localStorage persistence with schema version guard
+- [x] Cognito auth — email/password sign-up/sign-in via `<Authenticator>` UI
+- [x] DynamoDB sync — per-user state stored at `userId = identityId`, debounced 1.5s writes
+- [x] Multi-user isolation — identity switch detection clears stale localStorage on login
+
+## Deployment
+
+- GitHub Pages: https://acn-qiangchen.github.io/HomeFin/
+- GitHub Actions workflow: `.github/workflows/deploy.yml` — triggers on push to `main`
+- `vite.config.ts` has `base: '/HomeFin/'` — required for GitHub Pages; dev URL is `http://localhost:5173/HomeFin/`
 
 ## Repository
 
