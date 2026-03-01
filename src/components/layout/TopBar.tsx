@@ -1,4 +1,4 @@
-import { signOut } from 'aws-amplify/auth';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useFinance } from '../../hooks/useFinance';
 import { useLang } from '../../hooks/useLang';
 import type { Lang } from '../../i18n/translations';
@@ -15,12 +15,13 @@ function getMonthOptions(): string[] {
 
 const LANGS: { value: Lang; label: string }[] = [
   { value: 'en', label: 'EN' },
-  { value: 'ja', label: '日本語' },
+  { value: 'ja', label: 'JP' },
 ];
 
 export function TopBar() {
   const { state, setSelectedMonth, syncing } = useFinance();
   const { lang, setLang, t } = useLang();
+  const { user, signOut } = useAuthenticator((ctx) => [ctx.user]);
 
   return (
     <header className="h-14 bg-white border-b flex items-center justify-between px-4 md:px-6 sticky top-0 z-30">
@@ -33,6 +34,11 @@ export function TopBar() {
             {t.auth.syncing}
           </span>
         )}
+
+        {/* Logged-in user */}
+        <span className="text-xs text-gray-500 hidden sm:block" title={t.auth.loggedInAs}>
+          {user?.signInDetails?.loginId ?? user?.username}
+        </span>
 
         {/* Language switcher */}
         <div className="flex rounded-lg overflow-hidden border border-gray-200">

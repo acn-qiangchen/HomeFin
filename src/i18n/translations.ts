@@ -112,6 +112,7 @@ const en = {
     syncing: 'Syncing…',
     signInHeader: 'Sign in to HomeFin',
     signUpHeader: 'Create your account',
+    loggedInAs: 'Logged in as',
   },
 };
 
@@ -227,6 +228,7 @@ const ja: typeof en = {
     syncing: '同期中…',
     signInHeader: 'HomeFin にサインイン',
     signUpHeader: 'アカウントを作成',
+    loggedInAs: 'ログイン中',
   },
 };
 

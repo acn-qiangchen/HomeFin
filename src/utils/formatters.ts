@@ -14,10 +14,10 @@ export function localYearMonthDay(d: Date = new Date()): string {
 }
 
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('ja-JP', {
     style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
+    currency: 'JPY',
+    minimumFractionDigits: 0,
   }).format(amount);
 }
 
