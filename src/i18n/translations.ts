@@ -107,6 +107,12 @@ const en = {
     cancel: 'Cancel',
     delete: 'Delete',
   },
+  auth: {
+    signOut: 'Sign out',
+    syncing: 'Syncing…',
+    signInHeader: 'Sign in to HomeFin',
+    signUpHeader: 'Create your account',
+  },
 };
 
 const ja: typeof en = {
@@ -215,6 +221,12 @@ const ja: typeof en = {
   shared: {
     cancel: 'キャンセル',
     delete: '削除',
+  },
+  auth: {
+    signOut: 'サインアウト',
+    syncing: '同期中…',
+    signInHeader: 'HomeFin にサインイン',
+    signUpHeader: 'アカウントを作成',
   },
 };
 
