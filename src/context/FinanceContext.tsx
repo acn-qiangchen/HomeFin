@@ -1,7 +1,7 @@
 import React, { createContext, useReducer, useEffect, useRef, useState } from 'react';
 import type { FinanceState, Transaction, Budget, Category } from '../types';
 import { financeReducer } from './financeReducer';
-import { loadState, saveState } from '../utils/storage';
+import { loadState, saveState, loadStoredIdentity, saveIdentity, defaultFinanceState } from '../utils/storage';
 import { loadFromDynamo, saveToDynamo } from '../utils/dynamoSync';
 
 interface FinanceContextValue {
@@ -31,15 +31,30 @@ export function FinanceProvider({ children }: Props) {
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const loadingFromRemote = useRef(false);
 
-  // Load from DynamoDB on mount; fall back to localStorage if empty
+  // Load from DynamoDB on mount; detect user switch and reset stale localStorage
   useEffect(() => {
     setSyncing(true);
     loadingFromRemote.current = true;
-    loadFromDynamo().then((remote) => {
-      if (remote) {
+    loadFromDynamo().then(({ state: remote, identityId }) => {
+      const storedIdentity = loadStoredIdentity();
+      const userChanged = identityId !== null && storedIdentity !== identityId;
+
+      if (userChanged) {
+        // Different user logged in — discard previous user's cached data
+        const fresh = remote ?? defaultFinanceState();
+        dispatch({ type: 'LOAD_STATE', payload: fresh });
+        saveState(fresh);
+        saveIdentity(identityId);
+      } else if (remote) {
+        // Same user — apply fresh DynamoDB data
         dispatch({ type: 'LOAD_STATE', payload: remote });
-        saveState(remote); // keep localStorage in sync
+        saveState(remote);
+        if (identityId) saveIdentity(identityId);
+      } else if (identityId) {
+        // Same user but no DynamoDB record yet — persist identity for next check
+        saveIdentity(identityId);
       }
+
       loadingFromRemote.current = false;
       setSyncing(false);
     });

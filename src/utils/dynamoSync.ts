@@ -24,18 +24,25 @@ async function getSession(): Promise<SessionData> {
   return { client: DynamoDBDocumentClient.from(raw), identityId };
 }
 
-export async function loadFromDynamo(): Promise<FinanceState | null> {
+export interface DynamoLoadResult {
+  state: FinanceState | null;
+  identityId: string | null;
+}
+
+export async function loadFromDynamo(): Promise<DynamoLoadResult> {
   try {
     const { client, identityId } = await getSession();
     const res = await client.send(new GetCommand({
       TableName: TABLE,
       Key: { userId: identityId, sk: SK },
     }));
-    if (!res.Item?.data) return null;
-    return JSON.parse(res.Item.data as string) as FinanceState;
+    const state = res.Item?.data
+      ? JSON.parse(res.Item.data as string) as FinanceState
+      : null;
+    return { state, identityId };
   } catch (err) {
     console.error('DynamoDB load error:', err);
-    return null;
+    return { state: null, identityId: null };
   }
 }
 

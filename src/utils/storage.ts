@@ -3,6 +3,7 @@ import { DEFAULT_CATEGORIES } from '../constants/categories';
 import { localYearMonth } from './formatters';
 
 const STORAGE_KEY = 'homefin_state';
+const IDENTITY_KEY = 'homefin_identity';
 const SCHEMA_VERSION = 1;
 
 interface PersistedState extends FinanceState {
@@ -35,11 +36,23 @@ function currentMonth(): string {
   return localYearMonth();
 }
 
-function defaultState(): FinanceState {
+export function defaultFinanceState(): FinanceState {
   return {
     transactions: [],
     budgets: [],
     categories: DEFAULT_CATEGORIES,
     selectedMonth: currentMonth(),
   };
+}
+
+function defaultState(): FinanceState {
+  return defaultFinanceState();
+}
+
+export function loadStoredIdentity(): string | null {
+  return localStorage.getItem(IDENTITY_KEY);
+}
+
+export function saveIdentity(id: string): void {
+  localStorage.setItem(IDENTITY_KEY, id);
 }
