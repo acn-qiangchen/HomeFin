@@ -74,7 +74,7 @@ resolves to `session.identityId` from `fetchAuthSession()`.
 - All UI strings live in `src/i18n/translations.ts` — fully typed, no external library
 - Language stored in `localStorage` key `homefin_lang`
 - Hook: `useLang()` from `src/hooks/useLang.ts` — returns `{ lang, setLang, t }`
-- Switcher: EN / 日本語 toggle buttons in TopBar
+- Switcher: `EN | JP` toggle buttons in TopBar (short labels for mobile)
 - **Every component must use `t.*` — no hardcoded English strings**
 
 ### Timezone Safety
@@ -89,12 +89,16 @@ Budget       { id, categoryId, month "YYYY-MM", limit }
 FinanceState { transactions, budgets, categories, selectedMonth "YYYY-MM" }
 ```
 
+### Currency
+- All amounts display in **Japanese Yen (JPY)** — `formatCurrency` uses `ja-JP` locale, `currency: 'JPY'`, `minimumFractionDigits: 0`
+- Output example: `¥1,234` (no decimals)
+
 ### Key Utilities
 | File | Purpose |
 |---|---|
 | `src/utils/storage.ts` | `loadState()`, `saveState()`, `defaultFinanceState()`, `loadStoredIdentity()`, `saveIdentity()` |
 | `src/utils/dynamoSync.ts` | `loadFromDynamo()`, `saveToDynamo()` |
-| `src/utils/formatters.ts` | `formatCurrency`, `formatDate`, `formatMonth`, `localYearMonth`, `localYearMonthDay` |
+| `src/utils/formatters.ts` | `formatCurrency` (JPY), `formatDate`, `formatMonth`, `localYearMonth`, `localYearMonthDay` |
 | `src/utils/calculations.ts` | `filterByMonth`, `sumByType`, `groupByCategory`, `computeBudgetProgress`, `buildMonthlyBarData`, `getLast6Months` |
 | `src/utils/demoData.ts` | `seedDemoData(month, categories)` — generates 12 sample transactions |
 
@@ -128,7 +132,7 @@ src/
 │   ├── BudgetsPage.tsx
 │   └── SettingsPage.tsx
 └── components/
-    ├── layout/    Sidebar, TopBar
+    ├── layout/    Sidebar, TopBar (useAuthenticator for user email + signOut)
     ├── dashboard/ SummaryCards, SpendingPieChart, MonthlyBarChart, RecentTransactions
     ├── transactions/ TransactionForm, TransactionList, TransactionRow
     ├── budgets/   BudgetForm, BudgetCard, BudgetList
@@ -151,7 +155,7 @@ src/
 - [x] Settings — category management (add / edit / delete, color picker, type selector)
 - [x] i18n — English + Japanese, persisted preference, language switcher in TopBar
 - [x] Timezone-safe date handling (`localYearMonth`, `localYearMonthDay`)
-- [x] Cognito auth — email/password sign-up/sign-in via `<Authenticator>` UI
+- [x] Cognito auth — email/password sign-up/sign-in via `<Authenticator>` UI; logged-in email shown in TopBar
 - [x] DynamoDB sync — per-user state stored at `userId = identityId`, debounced 1.5s writes
 - [x] Multi-user isolation — identity switch detection clears stale localStorage on login
 
