@@ -15,8 +15,8 @@ export default function App() {
   return (
     <LangProvider>
       <Authenticator>
-        {({ user }) => (
-          <FinanceProvider userId={user!.username}>
+        {() => (
+          <FinanceProvider>
             <HashRouter>
               <div className="flex min-h-screen bg-gray-50">
                 <Sidebar />

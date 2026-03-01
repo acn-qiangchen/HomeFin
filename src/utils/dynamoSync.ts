@@ -7,23 +7,29 @@ const REGION = 'ap-northeast-1';
 const TABLE = 'HomeFin';
 const SK = 'STATE';
 
-async function getClient(): Promise<DynamoDBDocumentClient> {
+interface SessionData {
+  client: DynamoDBDocumentClient;
+  // identityId matches the IAM condition ${cognito-identity.amazonaws.com:sub}
+  identityId: string;
+}
+
+async function getSession(): Promise<SessionData> {
   const session = await fetchAuthSession();
-  const { accessKeyId, secretAccessKey, sessionToken } =
-    session.credentials!;
+  const { accessKeyId, secretAccessKey, sessionToken } = session.credentials!;
+  const identityId = session.identityId!;
   const raw = new DynamoDBClient({
     region: REGION,
     credentials: { accessKeyId, secretAccessKey, sessionToken },
   });
-  return DynamoDBDocumentClient.from(raw);
+  return { client: DynamoDBDocumentClient.from(raw), identityId };
 }
 
-export async function loadFromDynamo(userId: string): Promise<FinanceState | null> {
+export async function loadFromDynamo(): Promise<FinanceState | null> {
   try {
-    const client = await getClient();
+    const { client, identityId } = await getSession();
     const res = await client.send(new GetCommand({
       TableName: TABLE,
-      Key: { userId, sk: SK },
+      Key: { userId: identityId, sk: SK },
     }));
     if (!res.Item?.data) return null;
     return JSON.parse(res.Item.data as string) as FinanceState;
@@ -33,13 +39,13 @@ export async function loadFromDynamo(userId: string): Promise<FinanceState | nul
   }
 }
 
-export async function saveToDynamo(userId: string, state: FinanceState): Promise<void> {
+export async function saveToDynamo(state: FinanceState): Promise<void> {
   try {
-    const client = await getClient();
+    const { client, identityId } = await getSession();
     await client.send(new PutCommand({
       TableName: TABLE,
       Item: {
-        userId,
+        userId: identityId,
         sk: SK,
         data: JSON.stringify(state),
         updatedAt: new Date().toISOString(),

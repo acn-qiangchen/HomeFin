@@ -1,4 +1,6 @@
 import type { FinanceState, Transaction, Budget, Category } from '../types';
+import { DEFAULT_CATEGORIES } from '../constants/categories';
+import { localYearMonth } from '../utils/formatters';
 
 export type Action =
   | { type: 'ADD_TRANSACTION'; payload: Transaction }
@@ -16,7 +18,12 @@ export type Action =
 export function financeReducer(state: FinanceState, action: Action): FinanceState {
   switch (action.type) {
     case 'LOAD_STATE':
-      return action.payload;
+      return {
+        transactions: action.payload.transactions ?? [],
+        budgets: action.payload.budgets ?? [],
+        categories: action.payload.categories ?? DEFAULT_CATEGORIES,
+        selectedMonth: action.payload.selectedMonth ?? localYearMonth(),
+      };
 
     case 'ADD_TRANSACTION':
       return { ...state, transactions: [action.payload, ...state.transactions] };

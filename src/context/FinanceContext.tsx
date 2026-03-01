@@ -23,37 +23,38 @@ export const FinanceContext = createContext<FinanceContextValue | null>(null);
 
 interface Props {
   children: React.ReactNode;
-  userId: string;
 }
 
-export function FinanceProvider({ children, userId }: Props) {
+export function FinanceProvider({ children }: Props) {
   const [state, dispatch] = useReducer(financeReducer, undefined, loadState);
   const [syncing, setSyncing] = useState(true);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const initialLoad = useRef(true);
+  const loadingFromRemote = useRef(false);
 
   // Load from DynamoDB on mount; fall back to localStorage if empty
   useEffect(() => {
     setSyncing(true);
-    loadFromDynamo(userId).then((remote) => {
+    loadingFromRemote.current = true;
+    loadFromDynamo().then((remote) => {
       if (remote) {
         dispatch({ type: 'LOAD_STATE', payload: remote });
         saveState(remote); // keep localStorage in sync
       }
+      loadingFromRemote.current = false;
       setSyncing(false);
     });
-  }, [userId]);
+  }, []);
 
   // Save to localStorage immediately and DynamoDB (debounced 1.5s) on every change
   useEffect(() => {
-    if (initialLoad.current) { initialLoad.current = false; return; }
+    if (loadingFromRemote.current) return;
     saveState(state);
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => {
-      saveToDynamo(userId, state);
+      saveToDynamo(state);
     }, 1500);
     return () => { if (saveTimer.current) clearTimeout(saveTimer.current); };
-  }, [state, userId]);
+  }, [state]);
 
   const ctx: FinanceContextValue = {
     state,
