@@ -55,6 +55,11 @@ const en = {
     errAmount: 'Enter a positive amount',
     errCategory: 'Select a category',
     errDate: 'Select a date',
+    markAsFixed: 'Fixed monthly',
+    fixedBadge: 'Fixed',
+    copyLastMonthFixed: 'Copy last month\'s fixed',
+    copyFixedConfirmTitle: 'Copy fixed transactions',
+    copyFixedConfirmMessage: (n: number) => `Copy ${n} fixed transaction${n !== 1 ? 's' : ''} from last month to this month?`,
   },
   budgets: {
     title: 'Budgets',
@@ -106,6 +111,7 @@ const en = {
   shared: {
     cancel: 'Cancel',
     delete: 'Delete',
+    copy: 'Copy',
   },
   auth: {
     signOut: 'Sign out',
@@ -171,6 +177,11 @@ const ja: typeof en = {
     errAmount: '正の金額を入力してください',
     errCategory: 'カテゴリを選択してください',
     errDate: '日付を選択してください',
+    markAsFixed: '毎月固定',
+    fixedBadge: '固定',
+    copyLastMonthFixed: '先月の固定をコピー',
+    copyFixedConfirmTitle: '固定取引をコピー',
+    copyFixedConfirmMessage: (n: number) => `先月の固定取引${n}件を今月にコピーしますか？`,
   },
   budgets: {
     title: '予算',
@@ -222,6 +233,7 @@ const ja: typeof en = {
   shared: {
     cancel: 'キャンセル',
     delete: '削除',
+    copy: 'コピー',
   },
   auth: {
     signOut: 'サインアウト',

@@ -28,8 +28,13 @@ export function TransactionRow({ transaction: txn }: Props) {
           style={{ backgroundColor: category?.color ?? '#6b7280' }}
         />
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-800 truncate">
+          <p className="flex items-center gap-1.5 text-sm font-medium text-gray-800 truncate">
             {category?.label ?? txn.categoryId}
+            {txn.fixed && (
+              <span className="text-xs bg-blue-100 text-blue-600 rounded px-1 font-normal flex-shrink-0">
+                {t.transactions.fixedBadge}
+              </span>
+            )}
           </p>
           {txn.note && <p className="text-xs text-gray-400 truncate">{txn.note}</p>}
         </div>

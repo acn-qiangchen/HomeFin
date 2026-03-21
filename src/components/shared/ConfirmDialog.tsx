@@ -6,9 +6,11 @@ interface ConfirmDialogProps {
   message: string;
   onConfirm: () => void;
   onCancel: () => void;
+  confirmLabel?: string;
+  confirmVariant?: 'danger' | 'primary';
 }
 
-export function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel }: ConfirmDialogProps) {
+export function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel, confirmLabel = 'Delete', confirmVariant = 'danger' }: ConfirmDialogProps) {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -18,7 +20,7 @@ export function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel }: C
         <p className="mt-2 text-sm text-gray-600">{message}</p>
         <div className="mt-4 flex gap-3 justify-end">
           <Button variant="secondary" size="sm" onClick={onCancel}>Cancel</Button>
-          <Button variant="danger" size="sm" onClick={onConfirm}>Delete</Button>
+          <Button variant={confirmVariant} size="sm" onClick={onConfirm}>{confirmLabel}</Button>
         </div>
       </div>
     </div>

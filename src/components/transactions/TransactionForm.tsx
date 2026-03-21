@@ -23,6 +23,7 @@ export function TransactionForm({ initial, onDone }: Props) {
   const [categoryId, setCategoryId] = useState(initial?.categoryId ?? '');
   const [date, setDate] = useState(initial?.date ?? today());
   const [note, setNote] = useState(initial?.note ?? '');
+  const [fixed, setFixed] = useState(initial?.fixed ?? false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const categories = state.categories.filter(
@@ -50,6 +51,7 @@ export function TransactionForm({ initial, onDone }: Props) {
       date,
       note,
       createdAt: initial?.createdAt ?? new Date().toISOString(),
+      fixed: fixed || undefined,
     };
 
     if (initial) updateTransaction(txn);
@@ -122,6 +124,16 @@ export function TransactionForm({ initial, onDone }: Props) {
         onChange={(e) => setNote(e.target.value)}
         placeholder={t.transactions.notePlaceholder}
       />
+
+      <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
+        <input
+          type="checkbox"
+          checked={fixed}
+          onChange={(e) => setFixed(e.target.checked)}
+          className="h-4 w-4 rounded border-gray-300 text-blue-600"
+        />
+        {t.transactions.markAsFixed}
+      </label>
 
       <div className="flex gap-3 justify-end pt-2">
         <Button type="button" variant="secondary" onClick={onDone}>{t.transactions.btnCancel}</Button>

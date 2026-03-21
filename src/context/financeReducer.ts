@@ -4,6 +4,7 @@ import { localYearMonth } from '../utils/formatters';
 
 export type Action =
   | { type: 'ADD_TRANSACTION'; payload: Transaction }
+  | { type: 'ADD_TRANSACTIONS'; payload: Transaction[] }
   | { type: 'UPDATE_TRANSACTION'; payload: Transaction }
   | { type: 'DELETE_TRANSACTION'; payload: string }
   | { type: 'ADD_BUDGET'; payload: Budget }
@@ -27,6 +28,9 @@ export function financeReducer(state: FinanceState, action: Action): FinanceStat
 
     case 'ADD_TRANSACTION':
       return { ...state, transactions: [action.payload, ...state.transactions] };
+
+    case 'ADD_TRANSACTIONS':
+      return { ...state, transactions: [...action.payload, ...state.transactions] };
 
     case 'UPDATE_TRANSACTION':
       return {

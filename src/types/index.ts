@@ -9,6 +9,7 @@ export interface Transaction {
   date: string;       // "YYYY-MM-DD"
   note: string;
   createdAt: string;  // ISO timestamp
+  fixed?: boolean;    // true = repeats every month
 }
 
 export interface Category {

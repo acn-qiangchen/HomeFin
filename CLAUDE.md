@@ -53,8 +53,8 @@ resolves to `session.identityId` from `fetchAuthSession()`.
 - Single `FinanceState` in `FinanceContext` (React Context + useReducer)
 - On mount: loads from DynamoDB; detects user switch via `homefin_identity` localStorage key
 - Write-through cache: every state change saves to localStorage immediately + DynamoDB after 1.5s debounce
-- Reducer in `src/context/financeReducer.ts` — `LOAD_STATE` fills missing fields with defaults
-- Hook: `useFinance()` from `src/hooks/useFinance.ts` — exposes `state`, `syncing`, and all actions
+- Reducer in `src/context/financeReducer.ts` — `LOAD_STATE` fills missing fields with defaults; `ADD_TRANSACTIONS` bulk-inserts multiple transactions
+- Hook: `useFinance()` from `src/hooks/useFinance.ts` — exposes `state`, `syncing`, and all actions including `addTransactions(txns[])`
 
 ### Multi-User Isolation
 - Each user's data is stored in DynamoDB at `userId = identityId`
@@ -83,11 +83,12 @@ resolves to `session.identityId` from `fetchAuthSession()`.
 
 ### Data Models (`src/types/index.ts`)
 ```ts
-Transaction  { id, type, amount, categoryId, date "YYYY-MM-DD", note, createdAt }
+Transaction  { id, type, amount, categoryId, date "YYYY-MM-DD", note, createdAt, fixed? }
 Category     { id, label, color (hex), type: "income"|"expense"|"both" }
 Budget       { id, categoryId, month "YYYY-MM", limit }
 FinanceState { transactions, budgets, categories, selectedMonth "YYYY-MM" }
 ```
+- `fixed?: boolean` on Transaction — marks a recurring monthly transaction; `undefined`/`false` = not fixed
 
 ### Currency
 - All amounts display in **Japanese Yen (JPY)** — `formatCurrency` uses `ja-JP` locale, `currency: 'JPY'`, `minimumFractionDigits: 0`
@@ -143,9 +144,12 @@ src/
 ## Conventions
 
 - **Shared UI**: always use `Button`, `Input`, `Select`, `Modal`, `ConfirmDialog` from `src/components/shared/`
+- **Button variants**: `primary` (blue), `secondary` (gray), `danger` (red), `ghost` (transparent), `outline` (blue border)
+- **ConfirmDialog**: accepts optional `confirmLabel` (string) and `confirmVariant` (`'danger'|'primary'`) — use these when the action is not a delete
 - **Recharts Tooltip formatter**: must accept `value: number | undefined` — use `(v) => formatCurrency(Number(v))`
 - **Category deletion guard**: block delete if `categoryId` is referenced by any transaction or budget
 - **Budget duplicate guard**: block add if same `categoryId + month` already exists
+- **Fixed transaction copy guard**: skip copy if same `categoryId + date + amount` already exists in target month
 
 ## Completed Features
 
@@ -158,6 +162,7 @@ src/
 - [x] Cognito auth — email/password sign-up/sign-in via `<Authenticator>` UI; logged-in email shown in TopBar
 - [x] DynamoDB sync — per-user state stored at `userId = identityId`, debounced 1.5s writes
 - [x] Multi-user isolation — identity switch detection clears stale localStorage on login
+- [x] Fixed (recurring) transactions — mark transactions as monthly fixed; one-click copy from previous month with duplicate guard
 
 ## Deployment
 

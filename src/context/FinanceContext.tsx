@@ -8,6 +8,7 @@ interface FinanceContextValue {
   state: FinanceState;
   syncing: boolean;
   addTransaction: (t: Transaction) => void;
+  addTransactions: (txns: Transaction[]) => void;
   updateTransaction: (t: Transaction) => void;
   deleteTransaction: (id: string) => void;
   addBudget: (b: Budget) => void;
@@ -75,6 +76,7 @@ export function FinanceProvider({ children }: Props) {
     state,
     syncing,
     addTransaction: (t) => dispatch({ type: 'ADD_TRANSACTION', payload: t }),
+    addTransactions: (txns) => dispatch({ type: 'ADD_TRANSACTIONS', payload: txns }),
     updateTransaction: (t) => dispatch({ type: 'UPDATE_TRANSACTION', payload: t }),
     deleteTransaction: (id) => dispatch({ type: 'DELETE_TRANSACTION', payload: id }),
     addBudget: (b) => dispatch({ type: 'ADD_BUDGET', payload: b }),
