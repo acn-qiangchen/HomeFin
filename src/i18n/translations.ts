@@ -28,6 +28,7 @@ const en = {
     noRecentTxns: 'No transactions this month',
     barIncome: 'Income',
     barExpense: 'Expense',
+    totalBudget: 'Total Budget',
   },
   transactions: {
     title: 'Transactions',
@@ -83,6 +84,12 @@ const en = {
     errLimit: 'Enter a positive limit',
     errMonth: 'Select a month',
     errDuplicate: 'Budget already exists for this category/month',
+    labelNote: 'Note (optional)',
+    notePlaceholder: 'Add a note…',
+    copyLastMonth: 'Copy last month\'s budgets',
+    copyConfirmTitle: 'Copy budgets',
+    copyConfirmMessage: (n: number) => `Copy ${n} budget${n !== 1 ? 's' : ''} from last month to this month?`,
+    totalBudget: 'Total budget',
   },
   settings: {
     title: 'Settings',
@@ -150,6 +157,7 @@ const ja: typeof en = {
     noRecentTxns: '今月の取引がありません',
     barIncome: '収入',
     barExpense: '支出',
+    totalBudget: '予算合計',
   },
   transactions: {
     title: '収支記録',
@@ -205,6 +213,12 @@ const ja: typeof en = {
     errLimit: '正の金額を入力してください',
     errMonth: '月を選択してください',
     errDuplicate: 'このカテゴリと月の予算は既に存在します',
+    labelNote: 'メモ（任意）',
+    notePlaceholder: 'メモを入力…',
+    copyLastMonth: '先月の予算をコピー',
+    copyConfirmTitle: '予算をコピー',
+    copyConfirmMessage: (n: number) => `先月の予算${n}件を今月にコピーしますか？`,
+    totalBudget: '予算合計',
   },
   settings: {
     title: '設定',

@@ -35,7 +35,12 @@ export function BudgetCard({ progress }: Props) {
               className="w-3 h-3 rounded-full flex-shrink-0"
               style={{ backgroundColor: progress.category.color }}
             />
-            <span className="text-sm font-semibold text-gray-800">{progress.category.label}</span>
+            <div>
+              <span className="text-sm font-semibold text-gray-800">{progress.category.label}</span>
+              {progress.budget.note && (
+                <p className="text-xs text-gray-400 line-clamp-2">{progress.budget.note}</p>
+              )}
+            </div>
           </div>
           <div className="flex gap-1">
             <Button variant="ghost" size="sm" onClick={() => setEditing(true)}>

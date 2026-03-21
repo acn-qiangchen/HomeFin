@@ -12,6 +12,7 @@ interface FinanceContextValue {
   updateTransaction: (t: Transaction) => void;
   deleteTransaction: (id: string) => void;
   addBudget: (b: Budget) => void;
+  addBudgets: (bs: Budget[]) => void;
   updateBudget: (b: Budget) => void;
   deleteBudget: (id: string) => void;
   addCategory: (c: Category) => void;
@@ -80,6 +81,7 @@ export function FinanceProvider({ children }: Props) {
     updateTransaction: (t) => dispatch({ type: 'UPDATE_TRANSACTION', payload: t }),
     deleteTransaction: (id) => dispatch({ type: 'DELETE_TRANSACTION', payload: id }),
     addBudget: (b) => dispatch({ type: 'ADD_BUDGET', payload: b }),
+    addBudgets: (bs) => dispatch({ type: 'ADD_BUDGETS', payload: bs }),
     updateBudget: (b) => dispatch({ type: 'UPDATE_BUDGET', payload: b }),
     deleteBudget: (id) => dispatch({ type: 'DELETE_BUDGET', payload: id }),
     addCategory: (c) => dispatch({ type: 'ADD_CATEGORY', payload: c }),

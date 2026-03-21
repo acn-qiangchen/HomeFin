@@ -24,6 +24,7 @@ export interface Budget {
   categoryId: CategoryId;
   month: string;      // "YYYY-MM"
   limit: number;
+  note?: string;
 }
 
 export interface FinanceState {

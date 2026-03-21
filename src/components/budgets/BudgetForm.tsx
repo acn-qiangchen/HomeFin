@@ -16,6 +16,7 @@ export function BudgetForm({ initial, onDone }: Props) {
   const [categoryId, setCategoryId] = useState(initial?.categoryId ?? '');
   const [month, setMonth] = useState(initial?.month ?? state.selectedMonth);
   const [limit, setLimit] = useState(initial ? String(initial.limit) : '');
+  const [note, setNote] = useState(initial?.note ?? '');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const budgetCategories = state.categories.filter(
@@ -46,6 +47,7 @@ export function BudgetForm({ initial, onDone }: Props) {
       categoryId,
       month,
       limit: Number(limit),
+      note: note || undefined,
     };
 
     if (initial) updateBudget(budget);
@@ -84,6 +86,14 @@ export function BudgetForm({ initial, onDone }: Props) {
         onChange={(e) => setLimit(e.target.value)}
         placeholder="0"
         error={errors.limit}
+      />
+
+      <Input
+        label={t.budgets.labelNote}
+        type="text"
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        placeholder={t.budgets.notePlaceholder}
       />
 
       <div className="flex gap-3 justify-end pt-2">

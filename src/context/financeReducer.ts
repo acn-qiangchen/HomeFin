@@ -8,6 +8,7 @@ export type Action =
   | { type: 'UPDATE_TRANSACTION'; payload: Transaction }
   | { type: 'DELETE_TRANSACTION'; payload: string }
   | { type: 'ADD_BUDGET'; payload: Budget }
+  | { type: 'ADD_BUDGETS'; payload: Budget[] }
   | { type: 'UPDATE_BUDGET'; payload: Budget }
   | { type: 'DELETE_BUDGET'; payload: string }
   | { type: 'ADD_CATEGORY'; payload: Category }
@@ -48,6 +49,9 @@ export function financeReducer(state: FinanceState, action: Action): FinanceStat
 
     case 'ADD_BUDGET':
       return { ...state, budgets: [...state.budgets, action.payload] };
+
+    case 'ADD_BUDGETS':
+      return { ...state, budgets: [...state.budgets, ...action.payload] };
 
     case 'UPDATE_BUDGET':
       return {
