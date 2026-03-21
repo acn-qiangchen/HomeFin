@@ -22,7 +22,7 @@ export function TransactionRow({ transaction: txn }: Props) {
 
   return (
     <>
-      <div className="flex items-center gap-3 py-3 px-4 hover:bg-gray-50 rounded-lg group">
+      <div className="flex items-center gap-3 py-3 px-4 hover:bg-gray-50 rounded-lg">
         <span
           className="w-3 h-3 rounded-full flex-shrink-0"
           style={{ backgroundColor: category?.color ?? '#6b7280' }}
@@ -46,7 +46,7 @@ export function TransactionRow({ transaction: txn }: Props) {
         >
           {txn.type === 'income' ? '+' : '-'}{formatCurrency(txn.amount)}
         </span>
-        <div className="flex gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+        <div className="flex gap-1">
           <Button variant="ghost" size="sm" onClick={() => setEditing(true)}>
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
