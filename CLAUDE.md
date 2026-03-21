@@ -53,8 +53,8 @@ resolves to `session.identityId` from `fetchAuthSession()`.
 - Single `FinanceState` in `FinanceContext` (React Context + useReducer)
 - On mount: loads from DynamoDB; detects user switch via `homefin_identity` localStorage key
 - Write-through cache: every state change saves to localStorage immediately + DynamoDB after 1.5s debounce
-- Reducer in `src/context/financeReducer.ts` — `LOAD_STATE` fills missing fields with defaults; `ADD_TRANSACTIONS` bulk-inserts multiple transactions
-- Hook: `useFinance()` from `src/hooks/useFinance.ts` — exposes `state`, `syncing`, and all actions including `addTransactions(txns[])`
+- Reducer in `src/context/financeReducer.ts` — `LOAD_STATE` fills missing fields with defaults; `ADD_TRANSACTIONS` and `ADD_BUDGETS` bulk-insert multiple items
+- Hook: `useFinance()` from `src/hooks/useFinance.ts` — exposes `state`, `syncing`, and all actions including `addTransactions(txns[])` and `addBudgets(bs[])`
 
 ### Multi-User Isolation
 - Each user's data is stored in DynamoDB at `userId = identityId`
@@ -85,7 +85,7 @@ resolves to `session.identityId` from `fetchAuthSession()`.
 ```ts
 Transaction  { id, type, amount, categoryId, date "YYYY-MM-DD", note, createdAt, fixed? }
 Category     { id, label, color (hex), type: "income"|"expense"|"both" }
-Budget       { id, categoryId, month "YYYY-MM", limit }
+Budget       { id, categoryId, month "YYYY-MM", limit, note? }
 FinanceState { transactions, budgets, categories, selectedMonth "YYYY-MM" }
 ```
 - `fixed?: boolean` on Transaction — marks a recurring monthly transaction; `undefined`/`false` = not fixed
@@ -163,6 +163,8 @@ src/
 - [x] DynamoDB sync — per-user state stored at `userId = identityId`, debounced 1.5s writes
 - [x] Multi-user isolation — identity switch detection clears stale localStorage on login
 - [x] Fixed (recurring) transactions — mark transactions as monthly fixed; one-click copy from previous month with duplicate guard
+- [x] Budget note — optional note field on budgets, shown on BudgetCard
+- [x] Budget copy — one-click copy last month's budgets to current month with confirmation and duplicate guard
 
 ## Deployment
 

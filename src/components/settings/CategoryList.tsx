@@ -32,7 +32,7 @@ function CategoryRow({ category, canDelete }: RowProps) {
 
   return (
     <>
-      <div className="flex items-center gap-3 py-3 px-4 hover:bg-gray-50 rounded-lg group">
+      <div className="flex items-center gap-3 py-3 px-4 hover:bg-gray-50 rounded-lg">
         <span
           className="w-4 h-4 rounded-full flex-shrink-0"
           style={{ backgroundColor: category.color }}
@@ -41,7 +41,7 @@ function CategoryRow({ category, canDelete }: RowProps) {
         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_BADGE[category.type]}`}>
           {typeLabel[category.type]}
         </span>
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex gap-1">
           <Button variant="ghost" size="sm" onClick={() => setEditing(true)}>
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
