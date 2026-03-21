@@ -163,8 +163,9 @@ src/
 - [x] DynamoDB sync — per-user state stored at `userId = identityId`, debounced 1.5s writes
 - [x] Multi-user isolation — identity switch detection clears stale localStorage on login
 - [x] Fixed (recurring) transactions — mark transactions as monthly fixed; one-click copy from previous month with duplicate guard
-- [x] Budget note — optional note field on budgets, shown on BudgetCard
+- [x] Budget note — optional note field on budgets, shown on BudgetCard (up to 2 lines)
 - [x] Budget copy — one-click copy last month's budgets to current month with confirmation and duplicate guard
+- [x] Total budget — sum of current month's budget limits shown on Dashboard (4th summary card) and Budgets page
 
 ## Deployment
 

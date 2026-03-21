@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useFinance } from '../hooks/useFinance';
 import { useLang } from '../hooks/useLang';
-import { formatMonth } from '../utils/formatters';
+import { formatMonth, formatCurrency } from '../utils/formatters';
 import { BudgetList } from '../components/budgets/BudgetList';
 import { BudgetForm } from '../components/budgets/BudgetForm';
 import { Modal } from '../components/shared/Modal';
@@ -20,6 +20,9 @@ export function BudgetsPage() {
     : `${year}-${String(month - 1).padStart(2, '0')}`;
 
   const budgetsFromPrevMonth = state.budgets.filter((b) => b.month === prevMonth);
+  const totalLimit = state.budgets
+    .filter((b) => b.month === state.selectedMonth)
+    .reduce((sum, b) => sum + b.limit, 0);
 
   function handleCopyBudgets() {
     const currentMonth = state.selectedMonth;
@@ -58,6 +61,13 @@ export function BudgetsPage() {
           </Button>
         </div>
       </div>
+
+      {totalLimit > 0 && (
+        <div className="flex justify-end text-sm text-gray-500">
+          {t.budgets.totalBudget}:
+          <span className="ml-1 font-semibold text-gray-800">{formatCurrency(totalLimit)}</span>
+        </div>
+      )}
 
       <BudgetList />
 

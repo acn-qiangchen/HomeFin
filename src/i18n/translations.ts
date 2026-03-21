@@ -28,6 +28,7 @@ const en = {
     noRecentTxns: 'No transactions this month',
     barIncome: 'Income',
     barExpense: 'Expense',
+    totalBudget: 'Total Budget',
   },
   transactions: {
     title: 'Transactions',
@@ -88,6 +89,7 @@ const en = {
     copyLastMonth: 'Copy last month\'s budgets',
     copyConfirmTitle: 'Copy budgets',
     copyConfirmMessage: (n: number) => `Copy ${n} budget${n !== 1 ? 's' : ''} from last month to this month?`,
+    totalBudget: 'Total budget',
   },
   settings: {
     title: 'Settings',
@@ -155,6 +157,7 @@ const ja: typeof en = {
     noRecentTxns: '今月の取引がありません',
     barIncome: '収入',
     barExpense: '支出',
+    totalBudget: '予算合計',
   },
   transactions: {
     title: '収支記録',
@@ -215,6 +218,7 @@ const ja: typeof en = {
     copyLastMonth: '先月の予算をコピー',
     copyConfirmTitle: '予算をコピー',
     copyConfirmMessage: (n: number) => `先月の予算${n}件を今月にコピーしますか？`,
+    totalBudget: '予算合計',
   },
   settings: {
     title: '設定',

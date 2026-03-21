@@ -38,7 +38,7 @@ export function BudgetCard({ progress }: Props) {
             <div>
               <span className="text-sm font-semibold text-gray-800">{progress.category.label}</span>
               {progress.budget.note && (
-                <p className="text-xs text-gray-400">{progress.budget.note}</p>
+                <p className="text-xs text-gray-400 line-clamp-2">{progress.budget.note}</p>
               )}
             </div>
           </div>

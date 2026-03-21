@@ -8,6 +8,9 @@ export function SummaryCards() {
   const { t } = useLang();
   const txns = filterByMonth(state.transactions, state.selectedMonth);
   const { income, expense, net } = sumByType(txns);
+  const totalBudget = state.budgets
+    .filter((b) => b.month === state.selectedMonth)
+    .reduce((sum, b) => sum + b.limit, 0);
 
   const cards = [
     {
@@ -47,10 +50,23 @@ export function SummaryCards() {
         </svg>
       ),
     },
+    {
+      label: t.dashboard.totalBudget,
+      value: formatCurrency(totalBudget),
+      color: 'text-purple-600',
+      bg: 'bg-purple-50',
+      border: 'border-purple-200',
+      icon: (
+        <svg className="h-6 w-6 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      ),
+    },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {cards.map((card) => (
         <div key={card.label} className={`rounded-xl border p-5 ${card.bg} ${card.border}`}>
           <div className="flex items-center justify-between mb-3">
