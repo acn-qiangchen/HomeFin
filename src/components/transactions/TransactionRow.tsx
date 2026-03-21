@@ -46,7 +46,7 @@ export function TransactionRow({ transaction: txn }: Props) {
         >
           {txn.type === 'income' ? '+' : '-'}{formatCurrency(txn.amount)}
         </span>
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
           <Button variant="ghost" size="sm" onClick={() => setEditing(true)}>
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
