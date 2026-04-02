@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, useEffect, useRef, useState } from 'react';
-import type { FinanceState, Transaction, Budget, Category } from '../types';
+import type { FinanceState, Transaction, Budget, Category, PaymentMethod } from '../types';
 import { financeReducer } from './financeReducer';
 import { loadState, saveState, loadStoredIdentity, saveIdentity, defaultFinanceState } from '../utils/storage';
 import { loadFromDynamo, saveToDynamo } from '../utils/dynamoSync';
@@ -18,6 +18,9 @@ interface FinanceContextValue {
   addCategory: (c: Category) => void;
   updateCategory: (c: Category) => void;
   deleteCategory: (id: string) => void;
+  addPaymentMethod: (pm: PaymentMethod) => void;
+  updatePaymentMethod: (pm: PaymentMethod) => void;
+  deletePaymentMethod: (id: string) => void;
   setSelectedMonth: (month: string) => void;
 }
 
@@ -87,6 +90,9 @@ export function FinanceProvider({ children }: Props) {
     addCategory: (c) => dispatch({ type: 'ADD_CATEGORY', payload: c }),
     updateCategory: (c) => dispatch({ type: 'UPDATE_CATEGORY', payload: c }),
     deleteCategory: (id) => dispatch({ type: 'DELETE_CATEGORY', payload: id }),
+    addPaymentMethod: (pm) => dispatch({ type: 'ADD_PAYMENT_METHOD', payload: pm }),
+    updatePaymentMethod: (pm) => dispatch({ type: 'UPDATE_PAYMENT_METHOD', payload: pm }),
+    deletePaymentMethod: (id) => dispatch({ type: 'DELETE_PAYMENT_METHOD', payload: id }),
     setSelectedMonth: (month) => dispatch({ type: 'SET_SELECTED_MONTH', payload: month }),
   };
 
