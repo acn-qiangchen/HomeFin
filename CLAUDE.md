@@ -171,6 +171,7 @@ src/
 - [x] Total budget — sum of current month's budget limits shown on Dashboard (4th summary card) and Budgets page
 - [x] Payment methods — optional per-transaction payment method; managed in Settings; delete guarded if in use
 - [x] App version — build-time `__APP_VERSION__` + `__BUILD_DATE__` injected via vite.config; displayed in sidebar footer as `v0.0.0 · YYYY-MM-DD`
+- [x] Payment method stats — donut chart on Dashboard showing expense distribution by payment method; hidden when no methods configured; "Unspecified" bucket for transactions without a method
 
 ## Deployment
 
