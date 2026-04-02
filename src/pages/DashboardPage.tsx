@@ -1,6 +1,7 @@
 import { SummaryCards } from '../components/dashboard/SummaryCards';
 import { SpendingPieChart } from '../components/dashboard/SpendingPieChart';
 import { MonthlyBarChart } from '../components/dashboard/MonthlyBarChart';
+import { PaymentMethodPieChart } from '../components/dashboard/PaymentMethodPieChart';
 import { RecentTransactions } from '../components/dashboard/RecentTransactions';
 import { useFinance } from '../hooks/useFinance';
 import { useLang } from '../hooks/useLang';
@@ -20,6 +21,7 @@ export function DashboardPage() {
         <SpendingPieChart />
         <MonthlyBarChart />
       </div>
+      {state.paymentMethods.length > 0 && <PaymentMethodPieChart />}
       <RecentTransactions />
     </div>
   );
