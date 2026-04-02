@@ -29,6 +29,9 @@ const en = {
     barIncome: 'Income',
     barExpense: 'Expense',
     totalBudget: 'Total Budget',
+    spendingByPaymentMethod: 'Spending by Payment Method',
+    noPaymentMethodData: 'No expense data with payment methods this period',
+    noPaymentMethod: 'Unspecified',
   },
   transactions: {
     title: 'Transactions',
@@ -171,6 +174,9 @@ const ja: typeof en = {
     barIncome: '収入',
     barExpense: '支出',
     totalBudget: '予算合計',
+    spendingByPaymentMethod: '支払い方法別支出',
+    noPaymentMethodData: 'この期間の支払い方法付き支出データがありません',
+    noPaymentMethod: '未指定',
   },
   transactions: {
     title: '収支記録',

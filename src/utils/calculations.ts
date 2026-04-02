@@ -6,6 +6,19 @@ import type {
   BudgetProgress,
   MonthlyBarData,
 } from '../types';
+
+export interface PaymentMethodSpending {
+  paymentMethodId: string;
+  label: string;
+  color: string;
+  amount: number;
+}
+
+// Rotating palette for payment method slices
+const PM_COLORS = [
+  '#3b82f6', '#f97316', '#22c55e', '#a855f7', '#eab308',
+  '#14b8a6', '#ec4899', '#06b6d4', '#ef4444', '#8b5cf6',
+];
 import { formatMonthShort, localYearMonth } from './formatters';
 
 export function filterByMonth(transactions: Transaction[], month: string): Transaction[] {
@@ -40,6 +53,33 @@ export function groupByCategory(
         color: cat?.color ?? '#6b7280',
         amount,
       };
+    })
+    .sort((a, b) => b.amount - a.amount);
+}
+
+export function groupByPaymentMethod(
+  transactions: Transaction[],
+  state: FinanceState,
+  noMethodLabel: string
+): PaymentMethodSpending[] {
+  const map = new Map<string, number>();
+  for (const t of transactions) {
+    if (t.type !== 'expense') continue;
+    const key = t.paymentMethodId ?? '';
+    map.set(key, (map.get(key) ?? 0) + t.amount);
+  }
+
+  const pmOrder = state.paymentMethods.map((pm) => pm.id);
+
+  return Array.from(map.entries())
+    .map(([id, amount], idx) => {
+      if (id === '') {
+        return { paymentMethodId: '', label: noMethodLabel, color: '#9ca3af', amount };
+      }
+      const pm = state.paymentMethods.find((p) => p.id === id);
+      const colorIdx = pmOrder.indexOf(id);
+      const color = PM_COLORS[(colorIdx >= 0 ? colorIdx : idx) % PM_COLORS.length];
+      return { paymentMethodId: id, label: pm?.label ?? id, color, amount };
     })
     .sort((a, b) => b.amount - a.amount);
 }
