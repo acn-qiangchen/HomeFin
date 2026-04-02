@@ -1,4 +1,4 @@
-import type { FinanceState, Transaction, Budget, Category } from '../types';
+import type { FinanceState, Transaction, Budget, Category, PaymentMethod } from '../types';
 import { DEFAULT_CATEGORIES } from '../constants/categories';
 import { localYearMonth } from '../utils/formatters';
 
@@ -14,6 +14,9 @@ export type Action =
   | { type: 'ADD_CATEGORY'; payload: Category }
   | { type: 'UPDATE_CATEGORY'; payload: Category }
   | { type: 'DELETE_CATEGORY'; payload: string }
+  | { type: 'ADD_PAYMENT_METHOD'; payload: PaymentMethod }
+  | { type: 'UPDATE_PAYMENT_METHOD'; payload: PaymentMethod }
+  | { type: 'DELETE_PAYMENT_METHOD'; payload: string }
   | { type: 'SET_SELECTED_MONTH'; payload: string }
   | { type: 'LOAD_STATE'; payload: FinanceState };
 
@@ -24,6 +27,7 @@ export function financeReducer(state: FinanceState, action: Action): FinanceStat
         transactions: action.payload.transactions ?? [],
         budgets: action.payload.budgets ?? [],
         categories: action.payload.categories ?? DEFAULT_CATEGORIES,
+        paymentMethods: action.payload.paymentMethods ?? [],
         selectedMonth: action.payload.selectedMonth ?? localYearMonth(),
       };
 
@@ -77,6 +81,20 @@ export function financeReducer(state: FinanceState, action: Action): FinanceStat
 
     case 'DELETE_CATEGORY':
       return { ...state, categories: state.categories.filter((c) => c.id !== action.payload) };
+
+    case 'ADD_PAYMENT_METHOD':
+      return { ...state, paymentMethods: [...state.paymentMethods, action.payload] };
+
+    case 'UPDATE_PAYMENT_METHOD':
+      return {
+        ...state,
+        paymentMethods: state.paymentMethods.map((pm) =>
+          pm.id === action.payload.id ? action.payload : pm
+        ),
+      };
+
+    case 'DELETE_PAYMENT_METHOD':
+      return { ...state, paymentMethods: state.paymentMethods.filter((pm) => pm.id !== action.payload) };
 
     case 'SET_SELECTED_MONTH':
       return { ...state, selectedMonth: action.payload };

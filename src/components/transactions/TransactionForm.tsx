@@ -24,6 +24,7 @@ export function TransactionForm({ initial, onDone }: Props) {
   const [date, setDate] = useState(initial?.date ?? today());
   const [note, setNote] = useState(initial?.note ?? '');
   const [fixed, setFixed] = useState(initial?.fixed ?? false);
+  const [paymentMethodId, setPaymentMethodId] = useState(initial?.paymentMethodId ?? '');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const categories = state.categories.filter(
@@ -52,6 +53,7 @@ export function TransactionForm({ initial, onDone }: Props) {
       note,
       createdAt: initial?.createdAt ?? new Date().toISOString(),
       fixed: fixed || undefined,
+      paymentMethodId: paymentMethodId || undefined,
     };
 
     if (initial) updateTransaction(txn);
@@ -124,6 +126,19 @@ export function TransactionForm({ initial, onDone }: Props) {
         onChange={(e) => setNote(e.target.value)}
         placeholder={t.transactions.notePlaceholder}
       />
+
+      {state.paymentMethods.length > 0 && (
+        <Select
+          label={t.transactions.labelPaymentMethod}
+          value={paymentMethodId}
+          onChange={(e) => setPaymentMethodId(e.target.value)}
+        >
+          <option value="">{t.transactions.selectPaymentMethod}</option>
+          {state.paymentMethods.map((pm) => (
+            <option key={pm.id} value={pm.id}>{pm.label}</option>
+          ))}
+        </Select>
+      )}
 
       <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
         <input

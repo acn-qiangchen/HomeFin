@@ -1,6 +1,11 @@
 export type TransactionType = 'income' | 'expense';
 export type CategoryId = string;
 
+export interface PaymentMethod {
+  id: string;
+  label: string;
+}
+
 export interface Transaction {
   id: string;
   type: TransactionType;
@@ -10,6 +15,7 @@ export interface Transaction {
   note: string;
   createdAt: string;  // ISO timestamp
   fixed?: boolean;    // true = repeats every month
+  paymentMethodId?: string;
 }
 
 export interface Category {
@@ -31,6 +37,7 @@ export interface FinanceState {
   transactions: Transaction[];
   budgets: Budget[];
   categories: Category[];
+  paymentMethods: PaymentMethod[];
   selectedMonth: string; // "YYYY-MM"
 }
 

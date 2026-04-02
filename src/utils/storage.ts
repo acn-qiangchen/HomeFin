@@ -20,6 +20,7 @@ export function loadState(): FinanceState {
       transactions: parsed.transactions ?? [],
       budgets: parsed.budgets ?? [],
       categories: parsed.categories ?? DEFAULT_CATEGORIES,
+      paymentMethods: parsed.paymentMethods ?? [],
       selectedMonth: parsed.selectedMonth ?? currentMonth(),
     };
   } catch {
@@ -41,6 +42,7 @@ export function defaultFinanceState(): FinanceState {
     transactions: [],
     budgets: [],
     categories: DEFAULT_CATEGORIES,
+    paymentMethods: [],
     selectedMonth: currentMonth(),
   };
 }

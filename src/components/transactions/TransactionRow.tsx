@@ -19,6 +19,9 @@ export function TransactionRow({ transaction: txn }: Props) {
   const [confirming, setConfirming] = useState(false);
 
   const category = state.categories.find((c) => c.id === txn.categoryId);
+  const paymentMethod = txn.paymentMethodId
+    ? state.paymentMethods.find((pm) => pm.id === txn.paymentMethodId)
+    : undefined;
 
   return (
     <>
@@ -37,6 +40,9 @@ export function TransactionRow({ transaction: txn }: Props) {
             )}
           </p>
           {txn.note && <p className="text-xs text-gray-400 truncate">{txn.note}</p>}
+          {paymentMethod && (
+            <p className="text-xs text-gray-400 truncate">{paymentMethod.label}</p>
+          )}
         </div>
         <span className="text-xs text-gray-400 hidden sm:block">{formatDate(txn.date)}</span>
         <span
