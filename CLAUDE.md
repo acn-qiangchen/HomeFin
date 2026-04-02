@@ -170,6 +170,7 @@ src/
 - [x] Budget copy — one-click copy last month's budgets to current month with confirmation and duplicate guard
 - [x] Total budget — sum of current month's budget limits shown on Dashboard (4th summary card) and Budgets page
 - [x] Payment methods — optional per-transaction payment method; managed in Settings; delete guarded if in use
+- [x] App version — build-time `__APP_VERSION__` + `__BUILD_DATE__` injected via vite.config; displayed in sidebar footer as `v0.0.0 · YYYY-MM-DD`
 
 ## Deployment
 
