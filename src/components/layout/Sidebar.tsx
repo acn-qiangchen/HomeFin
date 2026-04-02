@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useLang } from '../../hooks/useLang';
+import { APP_VERSION } from '../../utils/appVersion';
 
 function useNavItems() {
   const { t } = useLang();
@@ -78,6 +79,9 @@ export function Sidebar() {
             </NavLink>
           ))}
         </nav>
+        <div className="px-6 py-4 border-t border-gray-700">
+          <p className="text-xs text-gray-500">{APP_VERSION}</p>
+        </div>
       </aside>
 
       {/* Mobile bottom nav */}
