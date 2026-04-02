@@ -24,6 +24,7 @@ source ~/.nvm/nvm.sh && nvm use 20   # always required — project needs Node 20
 npm run dev                           # http://localhost:5173/HomeFin/
 npm run build                         # output to dist/
 npx tsc --noEmit                      # type-check only
+npm test -- --run                     # vitest unit tests (non-interactive)
 ```
 
 ## AWS Infrastructure (ap-northeast-1)
@@ -83,12 +84,14 @@ resolves to `session.identityId` from `fetchAuthSession()`.
 
 ### Data Models (`src/types/index.ts`)
 ```ts
-Transaction  { id, type, amount, categoryId, date "YYYY-MM-DD", note, createdAt, fixed? }
-Category     { id, label, color (hex), type: "income"|"expense"|"both" }
-Budget       { id, categoryId, month "YYYY-MM", limit, note? }
-FinanceState { transactions, budgets, categories, selectedMonth "YYYY-MM" }
+Transaction    { id, type, amount, categoryId, date "YYYY-MM-DD", note, createdAt, fixed?, paymentMethodId? }
+Category       { id, label, color (hex), type: "income"|"expense"|"both" }
+Budget         { id, categoryId, month "YYYY-MM", limit, note? }
+PaymentMethod  { id, label }
+FinanceState   { transactions, budgets, categories, paymentMethods, selectedMonth "YYYY-MM" }
 ```
 - `fixed?: boolean` on Transaction — marks a recurring monthly transaction; `undefined`/`false` = not fixed
+- `paymentMethodId?: string` on Transaction — optional reference to a `PaymentMethod`
 
 ### Currency
 - All amounts display in **Japanese Yen (JPY)** — `formatCurrency` uses `ja-JP` locale, `currency: 'JPY'`, `minimumFractionDigits: 0`
@@ -166,6 +169,7 @@ src/
 - [x] Budget note — optional note field on budgets, shown on BudgetCard (up to 2 lines)
 - [x] Budget copy — one-click copy last month's budgets to current month with confirmation and duplicate guard
 - [x] Total budget — sum of current month's budget limits shown on Dashboard (4th summary card) and Budgets page
+- [x] Payment methods — optional per-transaction payment method; managed in Settings; delete guarded if in use
 
 ## Deployment
 
