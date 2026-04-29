@@ -96,6 +96,7 @@ const en = {
     copyConfirmTitle: 'Copy budgets',
     copyConfirmMessage: (n: number) => `Copy ${n} budget${n !== 1 ? 's' : ''} from last month to this month?`,
     totalBudget: 'Total budget',
+    viewTransactions: 'View transactions →',
   },
   settings: {
     title: 'Settings',
@@ -243,6 +244,7 @@ const ja: typeof en = {
     copyConfirmTitle: '予算をコピー',
     copyConfirmMessage: (n: number) => `先月の予算${n}件を今月にコピーしますか？`,
     totalBudget: '予算合計',
+    viewTransactions: '明細を見る →',
   },
   settings: {
     title: '設定',

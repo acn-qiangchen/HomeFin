@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import type { BudgetProgress } from '../../types';
 import { formatCurrency } from '../../utils/formatters';
 import { useLang } from '../../hooks/useLang';
@@ -79,6 +80,15 @@ export function BudgetCard({ progress }: Props) {
             {t.budgets.overBy} {formatCurrency(progress.spent - progress.budget.limit)}
           </p>
         )}
+
+        <div className="mt-2 text-right">
+          <Link
+            to={`/transactions?type=expense&category=${progress.budget.categoryId}`}
+            className="text-xs text-blue-500 hover:text-blue-700 hover:underline"
+          >
+            {t.budgets.viewTransactions}
+          </Link>
+        </div>
       </div>
 
       <Modal isOpen={editing} onClose={() => setEditing(false)} title={t.budgets.editTitle}>

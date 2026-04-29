@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import type { TransactionType } from '../../types';
 import { useFinance } from '../../hooks/useFinance';
 import { useLang } from '../../hooks/useLang';
@@ -9,8 +10,11 @@ import { TransactionRow } from './TransactionRow';
 export function TransactionList() {
   const { state } = useFinance();
   const { t } = useLang();
-  const [typeFilter, setTypeFilter] = useState<TransactionType | 'all'>('all');
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [searchParams] = useSearchParams();
+  const initialType = searchParams.get('type') as TransactionType | null;
+  const initialCategory = searchParams.get('category');
+  const [typeFilter, setTypeFilter] = useState<TransactionType | 'all'>(initialType ?? 'all');
+  const [categoryFilter, setCategoryFilter] = useState<string>(initialCategory ?? 'all');
 
   const monthTxns = filterByMonth(state.transactions, state.selectedMonth);
   const filtered = monthTxns
