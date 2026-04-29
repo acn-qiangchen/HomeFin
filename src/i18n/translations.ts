@@ -66,6 +66,7 @@ const en = {
     copyLastMonthFixed: 'Copy last month\'s fixed',
     copyFixedConfirmTitle: 'Copy fixed transactions',
     copyFixedConfirmMessage: (n: number) => `Copy ${n} fixed transaction${n !== 1 ? 's' : ''} from last month to this month?`,
+    filteredBalance: 'Balance',
   },
   budgets: {
     title: 'Budgets',
@@ -211,6 +212,7 @@ const ja: typeof en = {
     copyLastMonthFixed: '先月の固定をコピー',
     copyFixedConfirmTitle: '固定取引をコピー',
     copyFixedConfirmMessage: (n: number) => `先月の固定取引${n}件を今月にコピーしますか？`,
+    filteredBalance: '収支差額',
   },
   budgets: {
     title: '予算',

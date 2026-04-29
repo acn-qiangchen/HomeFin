@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { groupByPaymentMethod } from './calculations';
+import { groupByPaymentMethod, sumByType } from './calculations';
 import type { FinanceState, Transaction } from '../types';
 import { DEFAULT_CATEGORIES } from '../constants/categories';
 
@@ -29,6 +29,58 @@ function makeTxn(overrides: Partial<Transaction> = {}): Transaction {
     ...overrides,
   };
 }
+
+describe('sumByType', () => {
+  it('sums income and expense separately and computes net', () => {
+    const txns = [
+      makeTxn({ type: 'income', amount: 50000 }),
+      makeTxn({ type: 'expense', amount: 20000 }),
+      makeTxn({ type: 'expense', amount: 5000 }),
+    ];
+    const result = sumByType(txns);
+    expect(result.income).toBe(50000);
+    expect(result.expense).toBe(25000);
+    expect(result.net).toBe(25000);
+  });
+
+  it('returns zeros for empty array', () => {
+    const result = sumByType([]);
+    expect(result.income).toBe(0);
+    expect(result.expense).toBe(0);
+    expect(result.net).toBe(0);
+  });
+
+  it('returns negative net when expenses exceed income', () => {
+    const txns = [
+      makeTxn({ type: 'income', amount: 10000 }),
+      makeTxn({ type: 'expense', amount: 30000 }),
+    ];
+    const result = sumByType(txns);
+    expect(result.net).toBe(-20000);
+  });
+
+  it('sums only income when all transactions are income', () => {
+    const txns = [
+      makeTxn({ type: 'income', amount: 100000 }),
+      makeTxn({ type: 'income', amount: 50000 }),
+    ];
+    const result = sumByType(txns);
+    expect(result.income).toBe(150000);
+    expect(result.expense).toBe(0);
+    expect(result.net).toBe(150000);
+  });
+
+  it('sums only expense when all transactions are expenses', () => {
+    const txns = [
+      makeTxn({ type: 'expense', amount: 3000 }),
+      makeTxn({ type: 'expense', amount: 7000 }),
+    ];
+    const result = sumByType(txns);
+    expect(result.income).toBe(0);
+    expect(result.expense).toBe(10000);
+    expect(result.net).toBe(-10000);
+  });
+});
 
 describe('groupByPaymentMethod', () => {
   it('aggregates expenses by payment method', () => {

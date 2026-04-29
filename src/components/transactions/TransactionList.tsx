@@ -2,7 +2,8 @@ import { useState } from 'react';
 import type { TransactionType } from '../../types';
 import { useFinance } from '../../hooks/useFinance';
 import { useLang } from '../../hooks/useLang';
-import { filterByMonth } from '../../utils/calculations';
+import { filterByMonth, sumByType } from '../../utils/calculations';
+import { formatCurrency } from '../../utils/formatters';
 import { TransactionRow } from './TransactionRow';
 
 export function TransactionList() {
@@ -16,6 +17,8 @@ export function TransactionList() {
     .filter((txn) => typeFilter === 'all' || txn.type === typeFilter)
     .filter((txn) => categoryFilter === 'all' || txn.categoryId === categoryFilter)
     .sort((a, b) => b.date.localeCompare(a.date));
+
+  const totals = sumByType(filtered);
 
   return (
     <div className="flex flex-col gap-3">
@@ -39,6 +42,24 @@ export function TransactionList() {
             <option key={c.id} value={c.id}>{c.label}</option>
           ))}
         </select>
+      </div>
+
+      <div className="flex flex-wrap gap-x-4 gap-y-1 px-1 text-sm">
+        {typeFilter !== 'expense' && (
+          <span className="text-green-600 font-medium">
+            {t.transactions.income}: {formatCurrency(totals.income)}
+          </span>
+        )}
+        {typeFilter !== 'income' && (
+          <span className="text-red-500 font-medium">
+            {t.transactions.expense}: {formatCurrency(totals.expense)}
+          </span>
+        )}
+        {typeFilter === 'all' && (
+          <span className={`font-medium ${totals.net >= 0 ? 'text-blue-600' : 'text-red-500'}`}>
+            {t.transactions.filteredBalance}: {formatCurrency(totals.net)}
+          </span>
+        )}
       </div>
 
       <div className="bg-white rounded-xl border divide-y divide-gray-100">
