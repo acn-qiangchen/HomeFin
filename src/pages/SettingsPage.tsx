@@ -6,6 +6,7 @@ import { PaymentMethodList } from '../components/settings/PaymentMethodList';
 import { PaymentMethodForm } from '../components/settings/PaymentMethodForm';
 import { Modal } from '../components/shared/Modal';
 import { Button } from '../components/shared/Button';
+import { APP_VERSION } from '../utils/appVersion';
 
 export function SettingsPage() {
   const { t } = useLang();
@@ -40,6 +41,13 @@ export function SettingsPage() {
           </Button>
         </div>
         <PaymentMethodList />
+      </div>
+
+      {/* App version — shown on mobile where the sidebar footer is hidden */}
+      <div className="md:hidden pt-2 pb-4 border-t border-gray-200">
+        <p className="text-xs text-gray-400">
+          {t.settings.appVersion}: {APP_VERSION}
+        </p>
       </div>
 
       <Modal isOpen={addingCategory} onClose={() => setAddingCategory(false)} title={t.settings.addTitle}>

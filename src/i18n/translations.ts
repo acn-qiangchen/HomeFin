@@ -131,6 +131,7 @@ const en = {
     errPaymentMethodName: 'Name is required',
     errPaymentMethodDuplicate: 'A payment method with this name already exists',
     tooltipPaymentMethodInUse: 'Cannot delete: payment method is in use',
+    appVersion: 'App Version',
   },
   shared: {
     cancel: 'Cancel',
@@ -277,6 +278,7 @@ const ja: typeof en = {
     errPaymentMethodName: '名前は必須です',
     errPaymentMethodDuplicate: 'この支払い方法名は既に存在します',
     tooltipPaymentMethodInUse: '削除できません: 使用中の支払い方法',
+    appVersion: 'アプリバージョン',
   },
   shared: {
     cancel: 'キャンセル',
